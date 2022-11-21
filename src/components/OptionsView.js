@@ -2,12 +2,12 @@ import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
 
-const OptionsView = ({text, icon}) => {
+const OptionsView = ({text, icon, onPress}) => {
   return (
     <TouchableHighlight
       underlayColor={'#00A0F3'}
       activeOpacity={0.6}
-      onPress={() => {}}
+      onPress={onPress}
       style={{borderRadius: 5}}>
       <View style={styles.playlist__container}>
         <MaterialIcons name={icon} color={'#fff'} size={26} />
@@ -25,11 +25,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginVertical: 10,
-    marginHorizontal: 35,
+    marginHorizontal: 25,
   },
   playlist__text: {
-    marginLeft: 20,
-    fontSize: 18,
+    marginLeft: 10,
+    fontSize: 16,
     color: '#fff',
   },
 });

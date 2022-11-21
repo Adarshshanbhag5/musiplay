@@ -4,7 +4,8 @@ import globalStyle from '../utils/GlobalStyle';
 import React from 'react';
 import OptionsView from './OptionsView';
 
-const QueueOptions = ({modal, onPress}) => {
+const QueueOptions = ({data, modal, onPress}) => {
+  async function addToPlaylistHandler() {}
   return (
     <Modal
       animationType="fade"
@@ -17,7 +18,7 @@ const QueueOptions = ({modal, onPress}) => {
         <View style={styles.cont}>
           <View
             style={[globalStyle.flex__row__space, styles.header__container]}>
-            <Text style={styles.header__text}>Kun Faya Kun</Text>
+            <Text style={styles.header__text}>{data.title}</Text>
             <MaterialIcons name="favorite-border" color={'#fff'} size={26} />
           </View>
           <View
@@ -35,7 +36,11 @@ const QueueOptions = ({modal, onPress}) => {
           <View style={styles.modal__inner__container}>
             <OptionsView icon="skip-next" text="Play after current song" />
             <OptionsView icon="queue-music" text="Add to a queue" />
-            <OptionsView icon="playlist-add" text="Add to playlists" />
+            <OptionsView
+              icon="playlist-add"
+              text="Add to playlists"
+              onPress={addToPlaylistHandler}
+            />
           </View>
         </View>
       </Pressable>

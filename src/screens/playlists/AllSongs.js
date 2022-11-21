@@ -1,29 +1,30 @@
 import {FlatList, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
 import SongListView from '../../components/SongListView';
 import {useFileSystem} from '../../hooks/useFileSystem';
-import InitialQueueService from '../../services/InitialqueueService';
-import TrackPlayer from 'react-native-track-player';
 import AddQueueService from '../../services/AddQueueService';
 
 const AllSongs = ({navigation}) => {
   const {data} = useFileSystem();
+
+  const renderItem = useCallback(
+    ({item, index}) => (
+      <SongListView
+        data={item}
+        onPress={() => {
+          handlePress(index);
+        }}
+      />
+    ),
+    [handlePress],
+  );
   async function handlePress(startIndex) {
-    let track = data.map(item => ({
-      id: item.id,
-      url: `file://${item.path}`,
-      duration: Math.floor(parseInt(item.duration, 10) / 1000),
-      title: item.title,
-      album: item.album,
-      artist: item.artist,
-      artwork: item.cover,
-    }));
-    // await TrackPlayer.reset();
-    // await InitialQueueService(track);
-    // await TrackPlayer.skip(startIndex);
-    await AddQueueService(track, startIndex);
+    console.log(startIndex);
+    await AddQueueService(data, startIndex);
     navigation.navigate('NowPlaying');
   }
+
+  console.log('rerendered!');
   return (
     <View style={{flex: 1}}>
       <View style={styles.innerContainer}>
@@ -35,19 +36,7 @@ const AllSongs = ({navigation}) => {
         <FlatList
           keyExtractor={item => item.id}
           data={data}
-          renderItem={({item, index}) => (
-            <SongListView
-              album={item.album}
-              artist={item.artist}
-              title={item.title}
-              cover={item.cover}
-              duration={item.duration}
-              filePath={item.path}
-              onPress={() => {
-                handlePress(index);
-              }}
-            />
-          )}
+          renderItem={renderItem}
         />
       )}
     </View>

@@ -6,8 +6,19 @@ import GlobalStyle from '../../utils/GlobalStyle';
 import Touch from '../../utils/Touch';
 import PlaylistView from '../../components/PlaylistView';
 import globalStyle from '../../utils/GlobalStyle';
+import {usePlaylistContext} from '../../hooks/usePlaylistContext';
 
 const Playlists = ({navigation}) => {
+  const {playlist} = usePlaylistContext();
+
+  function createNewPlaylist() {
+    navigation.navigate('input-text');
+  }
+
+  function playlistLongPress(data, index) {
+    navigation.navigate('playlistlongpress', {data: {...data, index}});
+  }
+
   return (
     <View>
       <Touch
@@ -43,9 +54,22 @@ const Playlists = ({navigation}) => {
       </Touch>
       <View style={styles.playlist__container}>
         <Text style={styles.playlist__text}>Your Playlists</Text>
-        <PlaylistView />
-        <PlaylistView />
-        <TouchableOpacity>
+        {/* <PlaylistView />
+        <PlaylistView /> */}
+        {playlist &&
+          playlist.map((item, index) => (
+            <PlaylistView
+              name={item.name}
+              key={item.key}
+              onPress={() => {
+                navigation.navigate('userPlaylist', {data: item});
+              }}
+              onLongPress={() => {
+                playlistLongPress(item, index);
+              }}
+            />
+          ))}
+        <TouchableOpacity onPress={createNewPlaylist}>
           <View
             style={[globalStyle.flex__row__space, styles.add__playlist__btn]}>
             <MaterialIcons

@@ -9,16 +9,12 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
 import globalStyle from '../utils/GlobalStyle';
-
-const SongListView = ({
-  album,
-  artist,
-  title,
-  cover,
-  duration,
-  filePath,
-  onPress,
-}) => {
+import {useNavigation} from '@react-navigation/native';
+const SongListView = ({data, onPress}) => {
+  const navigation = useNavigation();
+  const handleOptionPress = () => {
+    navigation.navigate('option-modal', {data});
+  };
   return (
     <Pressable
       onPress={onPress}
@@ -29,28 +25,41 @@ const SongListView = ({
       ]}>
       <View style={styles.listContainer}>
         <View style={styles.innerContainer}>
-          <Image source={{uri: cover}} style={styles.albumArt} />
+          <Image
+            source={
+              data.artwork
+                ? {uri: data.artwork}
+                : require('../../assets/artwork_placeholder.png')
+            }
+            style={styles.albumArt}
+          />
           <View style={styles.innerContainer__textContainer}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.text}>{artist}</Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
+              {data.title}
+            </Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+              {data.artist}
+            </Text>
             <View style={globalStyle.flex__row__space}>
-              <Text style={styles.text}>{album}</Text>
+              <Text numberOfLines={2} ellipsizeMode="tail" style={styles.text}>
+                {data.album}
+              </Text>
               <Text style={styles.text}>
-                {new Date(duration * 1).toISOString().slice(14, 19)}
+                {new Date(data.duration * 1000).toISOString().slice(14, 19)}
               </Text>
             </View>
           </View>
         </View>
         <View>
-          <TouchableHighlight onPress={() => {}}>
+          <TouchableHighlight onPress={handleOptionPress}>
             <MaterialIcons
               name="more-horiz"
               color={'#000'}
-              size={24}
+              size={22}
               style={{
                 backgroundColor: '#fff',
                 borderRadius: 8,
-                marginHorizontal: 10,
+                margin: 15,
               }}
             />
           </TouchableHighlight>
@@ -73,8 +82,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   albumArt: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     marginHorizontal: 10,
   },
   innerContainer__textContainer: {
@@ -82,14 +91,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   title: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 1,
     color: '#fff',
+    fontWeight: 'bold',
   },
   text: {
     marginBottom: 1,
     color: '#fff',
-    fontSize: 12,
+    fontSize: 11,
   },
   innerContainer: {
     flexDirection: 'row',

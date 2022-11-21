@@ -3,12 +3,12 @@ import React from 'react';
 import Touch from '../utils/Touch';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const PlaylistView = () => {
+const PlaylistView = ({name, onPress, onLongPress}) => {
   return (
-    <Touch>
+    <Touch onPress={onPress} onLongPress={onLongPress}>
       <View style={styles.playlist__container}>
         <MaterialIcons name="list" color={'#fff'} size={26} />
-        <Text style={styles.playlist__text}>My playlist</Text>
+        <Text style={styles.playlist__text}>{name}</Text>
       </View>
     </Touch>
   );

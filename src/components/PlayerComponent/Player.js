@@ -4,10 +4,10 @@ import PlayerControlUp from './PlayerControlUp';
 import PlayerControlBottom from './PlayerControlBottom';
 import PlayerSeekbar from './PlayerSeekbar';
 
-const Player = () => {
+const Player = ({track}) => {
   return (
     <View>
-      <PlayerControlUp />
+      <PlayerControlUp track={track} />
       <PlayerSeekbar />
       <PlayerControlBottom />
     </View>

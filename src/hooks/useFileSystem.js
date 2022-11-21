@@ -1,6 +1,7 @@
 import React, {createContext, useContext, useEffect, useState} from 'react';
 import {NativeModules, Platform} from 'react-native';
 import RNFS from 'react-native-fs';
+import convertMsToTime from '../utils/DurationFromater';
 const FileSystemContext = createContext();
 export const useFileSystem = () => useContext(FileSystemContext);
 const {RNGetAudioFiles} = NativeModules;
@@ -39,11 +40,10 @@ export function FileSystemProvider({children}) {
     }
   }
 
-  function getSongs(options = {}) {
+  function getSongs() {
     return new Promise((resolve, reject) => {
       if (Platform.OS === 'android') {
         RNGetAudioFiles.getSong(
-          options,
           albums => {
             resolve(albums);
           },
@@ -59,16 +59,22 @@ export function FileSystemProvider({children}) {
     if (data) {
       const rootPath = RNFS.ExternalStorageDirectoryPath;
       let result = [
-        ...new Set(data.map(item => item.path.match(/(.*)[\/\\]/)[1] || '')),
+        ...new Set(
+          data.map(
+            item =>
+              item.url.replace('file://', '').match(/(.*)[\/\\]/)[1] || '',
+          ),
+        ),
       ];
       let arr = [];
       result.forEach(item => {
         let totalFiles = data.filter(
-          val => item === val.path.match(/(.*)[\/\\]/)[1] || '',
+          val =>
+            item === val.url.replace('file://', '').match(/(.*)[\/\\]/)[1] ||
+            '',
         );
-        let totalDuration = totalFiles.reduce(
-          (total, val) => parseInt(val.duration, '10') + total,
-          0,
+        let totalDuration = convertMsToTime(
+          totalFiles.reduce((total, val) => val.duration + total, 0),
         );
         let folderHierarchy = item.split(`${rootPath}/`).pop().split('/');
         arr = [

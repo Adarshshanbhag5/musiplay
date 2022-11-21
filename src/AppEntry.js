@@ -1,13 +1,11 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import {DarkTheme, NavigationContainer} from '@react-navigation/native';
 import IntroNavigator from './appIntro/IntroNavigator';
 import {StoragePermissionContext} from './context/StoragePermissionContext';
-import MusicPlay from './MusicPlay';
-import {FileSystemProvider} from './hooks/useFileSystem';
-import {TrackProvider} from './hooks/useTrackContext';
 import useGetOnboardingStatus from './hooks/useGetOnboardingStatus';
 import StoragePermissionScreen from './appIntro/StoragePermissionScreen';
 import {ActivityIndicator, View} from 'react-native';
+import RootStackScreen from './screens/RootStackScreen';
 
 const AppEntry = () => {
   const {permissionGranted, permissionLoading} = useContext(
@@ -34,13 +32,7 @@ const AppEntry = () => {
       </View>
     );
   } else {
-    return (
-      <FileSystemProvider>
-        <TrackProvider>
-          <MusicPlay />
-        </TrackProvider>
-      </FileSystemProvider>
-    );
+    return <RootStackScreen />;
   }
 };
 

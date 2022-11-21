@@ -1,14 +1,25 @@
 import {Image, StyleSheet, View} from 'react-native';
 import React from 'react';
+import {State, usePlaybackState} from 'react-native-track-player';
 
 const AlbumArt = ({artwork}) => {
+  const state = usePlaybackState();
+  const isPlaying = state === State.Playing;
   return (
     <View style={styles.image__container}>
       <Image
-        source={{
-          uri: artwork,
-        }}
-        style={styles.albumArt}
+        source={
+          artwork
+            ? {
+                uri: artwork,
+              }
+            : require('../../../assets/artwork_placeholder.png')
+        }
+        style={
+          isPlaying
+            ? {...styles.albumArt}
+            : {...styles.albumArt, width: '80%', height: 300}
+        }
       />
     </View>
   );
@@ -28,6 +39,8 @@ const styles = StyleSheet.create({
     width: '85%',
     height: 320,
     resizeMode: 'cover',
-    elevation: 8,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowRadius: 10,
   },
 });

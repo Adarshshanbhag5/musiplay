@@ -1,8 +1,8 @@
-import {StyleSheet} from 'react-native';
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Playlists from './Playlists';
 import AllSongs from './AllSongs';
+import UserPlaylist from './UserPlaylist';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,10 +19,13 @@ const PlaylistsNavigator = () => {
         component={AllSongs}
         options={{headerTitle: 'All songs'}}
       />
+      <Stack.Screen
+        name="userPlaylist"
+        component={UserPlaylist}
+        options={({route}) => ({headerTitle: route.params.data.name})}
+      />
     </Stack.Navigator>
   );
 };
 
 export default PlaylistsNavigator;
-
-const styles = StyleSheet.create({});

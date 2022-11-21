@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -23,7 +24,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import android.os.Environment;
 
-import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
@@ -35,7 +35,7 @@ public class RNGetAudioFilesModule extends ReactContextBaseJavaModule {
     public String coverFolder = "/";
     public double coverResizeRatio = 1;
     public int coverSize = 0;
-    public boolean getCoverFromSongs = true;
+
 
     public RNGetAudioFilesModule(@Nullable ReactApplicationContext reactContext) {
         super(reactContext);
@@ -121,7 +121,7 @@ public class RNGetAudioFilesModule extends ReactContextBaseJavaModule {
                         items.putString("cover", "file://" + encoded);
                     } else {
                         // Do something else on failure
-                        Log.e("faiure","no success failure");
+                        Log.e("failure","no success failure");
                     }
 
                 } catch (Exception e) {
@@ -147,167 +147,50 @@ public class RNGetAudioFilesModule extends ReactContextBaseJavaModule {
             getCoverByPath( coverFolder, coverResizeRatio, coverSize, songPath, songId, items);
         }
         else{
-            items.putString("cover","file://" + pathToImg );
+            items.putString("artwork","file://" + pathToImg );
         }
 
     }
-
-
+    
     @ReactMethod
-    public void getSong(ReadableMap options, final Callback successCallback, final Callback errorCallback) {
-
-        if (options.hasKey("coverFolder")) {
-            coverFolder = options.getString("coverFolder");
-        }
-
-        if (options.hasKey("cover")) {
-            getCoverFromSongs = options.getBoolean("cover");
-        }
-
-        if (options.hasKey("coverResizeRatio")) {
-            coverResizeRatio = options.getDouble("coverResizeRatio");
-        }
-
-        if (options.hasKey("coverSize")) {
-            coverSize = options.getInt("coverSize");
-        }
-
+    public void getSong( final Callback successCallback , final Callback errorCallback) {
         WritableArray jsonArray = new WritableNativeArray();
-
-        if (options.hasKey("artist") && !options.hasKey("album")) {
-            String[] projection = new String[] { MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
-                    MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA,
-                    MediaStore.Audio.Media._ID };
-
-            Cursor cursor = getCurrentActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    projection, MediaStore.Audio.Albums.ARTIST + " Like ?",
-                    new String[] { "%" + options.getString("artist") + "%" }, null);
+        String[] projection = new String[]{
+                MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DISPLAY_NAME
+        };
+        Uri songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+        Cursor cursor = getCurrentActivity().getContentResolver().query(songUri, projection, selection, null, null);
+        try {
             if (cursor != null && cursor.getCount() > 0) {
                 int idColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
                 cursor.moveToFirst();
                 do {
                     WritableMap item = new WritableNativeMap();
-                    item.putString("title", String.valueOf(cursor.getString(0)));
+                    int duration = (cursor.getString(4) == null? 0 : (Integer.parseInt(cursor.getString(4), 10)) / 1000);
+                    String url = "file://" + cursor.getString(5);
+                    item.putString("album", String.valueOf(cursor.getString(0)));
                     item.putString("artist", String.valueOf(cursor.getString(1)));
-                    item.putString("album", String.valueOf(cursor.getString(2)));
-                    item.putString("duration", String.valueOf(cursor.getString(3)));
-                    item.putString("path", String.valueOf(cursor.getString(4)));
-                    item.putString("id", String.valueOf(cursor.getString(5)));
-                    String songPath = cursor.getString(4);
+                    item.putString("title", String.valueOf(cursor.getString(2)));
+                    item.putString("id", String.valueOf(cursor.getString(3)));
+                    item.putInt("duration", duration);
+                    item.putString("url", url);
+                    item.putString("display_name", String.valueOf(cursor.getString(6)));
+
                     long id = cursor.getLong(idColumn);
-                    //getCoverByPath( coverFolder, coverResizeRatio, coverSize, songPath, id, item);
+                    String songPath = cursor.getString(5);
                     coverCheck(songPath,id,item);
                     jsonArray.pushMap(item);
                 } while (cursor.moveToNext());
             } else {
                 String msg = "cursor is either null or empty ";
-                Log.e("Musica", msg);
+                Log.e("musicPlay error", msg);
             }
-            Log.e("MusicaAlbums", String.valueOf(jsonArray));
             cursor.close();
             successCallback.invoke(jsonArray);
-        }
-
-        if (!options.hasKey("artist") && options.hasKey("album")) {
-            String[] projection = new String[] { MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
-                    MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA,
-                    MediaStore.Audio.Media._ID };
-
-            Cursor cursor = getCurrentActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    projection, MediaStore.Audio.Albums.ALBUM + " Like ?", new String[] { "%" + options.getString("album") + "%" },
-                    null);
-            if (cursor != null && cursor.getCount() > 0) {
-                int idColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
-                cursor.moveToFirst();
-                do {
-                    WritableMap item = new WritableNativeMap();
-                    item.putString("title", String.valueOf(cursor.getString(0)));
-                    item.putString("artist", String.valueOf(cursor.getString(1)));
-                    item.putString("album", String.valueOf(cursor.getString(2)));
-                    item.putString("duration", String.valueOf(cursor.getString(3)));
-                    item.putString("path", String.valueOf(cursor.getString(4)));
-                    item.putString("id", String.valueOf(cursor.getString(5)));
-                    long id = cursor.getLong(idColumn);
-                    String songPath = cursor.getString(4);
-                    //getCoverByPath( coverFolder, coverResizeRatio, coverSize, songPath, id, item);
-                    coverCheck(songPath,id,item);
-                    jsonArray.pushMap(item);
-                } while (cursor.moveToNext());
-            } else {
-                String msg = "cursor is either null or empty ";
-                Log.e("Musica", msg);
-            }
-            Log.e("MusicaAlbums", String.valueOf(jsonArray));
-            cursor.close();
-            successCallback.invoke(jsonArray);
-        }
-
-        if (!options.hasKey("artist") && !options.hasKey("album")) {
-            String[] projection = new String[] { MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
-                    MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA,
-                    MediaStore.Audio.Media._ID };
-
-            Cursor cursor = getCurrentActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    projection, MediaStore.Audio.Media.IS_MUSIC + "!= 0", null, null);
-            if (cursor != null && cursor.getCount() > 0) {
-                int idColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
-                cursor.moveToFirst();
-                do {
-                    WritableMap item = new WritableNativeMap();
-                    item.putString("title", String.valueOf(cursor.getString(0)));
-                    item.putString("artist", String.valueOf(cursor.getString(1)));
-                    item.putString("album", String.valueOf(cursor.getString(2)));
-                    item.putString("duration", String.valueOf(cursor.getString(3)));
-                    item.putString("path", String.valueOf(cursor.getString(4)));
-                    item.putString("id", String.valueOf(cursor.getString(5)));
-                    long id = cursor.getLong(idColumn);
-                    String songPath = cursor.getString(4);
-                    //getCoverByPath( coverFolder, coverResizeRatio, coverSize, songPath, id, item);
-                    coverCheck(songPath,id,item);
-                    jsonArray.pushMap(item);
-                } while (cursor.moveToNext());
-            } else {
-                String msg = "cursor is either null or empty ";
-                Log.e("Musica", msg);
-            }
-            Log.e("MusicaAlbums", String.valueOf(jsonArray));
-            cursor.close();
-            successCallback.invoke(jsonArray);
-        }
-
-        if (options.hasKey("artist") && options.hasKey("album")) {
-            String[] projection = new String[] { MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
-                    MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA,
-                    MediaStore.Audio.Media._ID };
-
-            Cursor cursor = getCurrentActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    projection,
-                    MediaStore.Audio.Albums.ARTIST + " Like ? AND " + MediaStore.Audio.Albums.ALBUM + " Like ?",
-                    new String[] { "%" + options.getString("artist") + "%", "%" + options.getString("album") + "%"}, null);
-            if (cursor != null && cursor.getCount() > 0) {
-                int idColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
-                cursor.moveToFirst();
-                do {
-                    WritableMap item = new WritableNativeMap();
-                    item.putString("title", String.valueOf(cursor.getString(0)));
-                    item.putString("artist", String.valueOf(cursor.getString(1)));
-                    item.putString("album", String.valueOf(cursor.getString(2)));
-                    item.putString("duration", String.valueOf(cursor.getString(3)));
-                    item.putString("path", String.valueOf(cursor.getString(4)));
-                    item.putString("id", String.valueOf(cursor.getString(5)));
-                    long id = cursor.getLong(idColumn);
-                    String songPath = cursor.getString(4);
-                    //getCoverByPath( coverFolder, coverResizeRatio, coverSize, songPath, id, item);
-                    coverCheck(songPath,id,item);
-                    jsonArray.pushMap(item);
-                } while (cursor.moveToNext());
-            } else {
-                String msg = "cursor is either null or empty ";
-                Log.e("Musica", msg);
-            }
-            Log.e("MusicaAlbums", String.valueOf(jsonArray));
-            cursor.close();
-            successCallback.invoke(jsonArray);
+        } catch (RuntimeException e) {
+            errorCallback.invoke(e.toString());
         }
     }
 }

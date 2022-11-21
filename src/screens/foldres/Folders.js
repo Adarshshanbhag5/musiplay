@@ -1,5 +1,5 @@
 import {FlatList, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useCallback} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FolderListView from '../../components/FolderListView';
 import {useFileSystem} from '../../hooks/useFileSystem';
@@ -8,6 +8,25 @@ import {useFileSystem} from '../../hooks/useFileSystem';
 
 const Folders = ({navigation}) => {
   const {fsData} = useFileSystem();
+
+  const renderItem = useCallback(
+    ({item}) => (
+      <FolderListView
+        onPress={() => {
+          handlePress(item);
+        }}
+        name={item.folderHierarchy[0]}
+      />
+    ),
+    [handlePress],
+  );
+
+  const handlePress = item => {
+    navigation.navigate('Music', {
+      data: item,
+      hierarchyCount: 1,
+    });
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -22,17 +41,7 @@ const Folders = ({navigation}) => {
       {fsData && (
         <FlatList
           data={fsData}
-          renderItem={({item}) => (
-            <FolderListView
-              onPress={() => {
-                navigation.navigate('Music', {
-                  data: [item],
-                  hierarchyCount: 1,
-                });
-              }}
-              name={item.folderHierarchy[0]}
-            />
-          )}
+          renderItem={renderItem}
           keyExtractor={(_, index) => index.toString()}
         />
       )}

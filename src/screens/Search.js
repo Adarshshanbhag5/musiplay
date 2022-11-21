@@ -1,13 +1,39 @@
 import {FlatList, StyleSheet, Text, TextInput, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {useFileSystem} from '../hooks/useFileSystem';
 import SongListView from '../components/SongListView';
+import AddQueueService from '../services/AddQueueService';
 
-const Search = () => {
+const Search = ({navigation}) => {
   const {data} = useFileSystem();
   const [input, setInput] = useState('');
-  function inputHandler(e) {
-    setInput(e.target.value);
+  const renderItem = useCallback(
+    ({item, index}) => (
+      <SongListView
+        data={item}
+        onPress={() => {
+          handlePress(index);
+        }}
+      />
+    ),
+    [handlePress],
+  );
+  const DATA = useMemo(() => {
+    return data.filter(val => {
+      if (input === '') {
+        return null;
+      } else if (
+        val.title.toLowerCase().includes(input.toLowerCase()) ||
+        val.artist.toLowerCase().includes(input.toLowerCase())
+      ) {
+        return val;
+      }
+    });
+  }, [input]);
+  async function handlePress(startIndex) {
+    console.log(startIndex);
+    await AddQueueService(DATA, startIndex);
+    navigation.navigate('NowPlaying');
   }
   return (
     <View style={styles.container}>
@@ -21,26 +47,9 @@ const Search = () => {
       </View>
       {data && (
         <FlatList
-          data={data.filter(val => {
-            if (input === '') {
-              return null;
-            } else if (
-              val.title.toLowerCase().includes(input.toLowerCase()) ||
-              val.artist.toLowerCase().includes(input.toLowerCase())
-            ) {
-              return val;
-            }
-          })}
-          renderItem={({item}) => (
-            <SongListView
-              album={item.album}
-              artist={item.artist}
-              title={item.title}
-              cover={item.cover}
-              duration={item.duration}
-              filePath={item.path}
-            />
-          )}
+          data={DATA}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
         />
       )}
     </View>

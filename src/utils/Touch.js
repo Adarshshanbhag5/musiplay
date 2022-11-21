@@ -1,10 +1,11 @@
 import {Pressable, StyleSheet} from 'react-native';
 import React from 'react';
 
-const Touch = ({children, onPress, style}) => {
+const Touch = ({children, onPress, onLongPress, style}) => {
   return (
     <Pressable
       onPress={onPress}
+      onLongPress={onLongPress}
       style={({pressed}) => [
         {backgroundColor: pressed ? '#111' : 'transparent', ...style},
       ]}

@@ -11,6 +11,11 @@ const globalStyle = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  flex__row__end: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
   flex__row__center: {
     flexDirection: 'row',
     justifyContent: 'center',

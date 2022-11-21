@@ -1,8 +1,8 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import Slider from '@react-native-community/slider';
 import globalStyle from '../../utils/GlobalStyle';
 import TrackPlayer, {useProgress} from 'react-native-track-player';
+import Slider from '@react-native-community/slider';
 
 const PlayerSeekbar = () => {
   const progress = useProgress();
@@ -18,7 +18,7 @@ const PlayerSeekbar = () => {
         maximumValue={progress.duration}
         onSlidingComplete={TrackPlayer.seekTo}
         minimumTrackTintColor="#FFFFFF"
-        maximumTrackTintColor="#888888"
+        maximumTrackTintColor="#aaa"
         thumbTintColor="#fff"
         style={styles.seekBar}
       />
@@ -44,5 +44,6 @@ const styles = StyleSheet.create({
   },
   duration__text: {
     marginHorizontal: 0,
+    color: '#fff',
   },
 });

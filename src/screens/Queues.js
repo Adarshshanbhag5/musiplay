@@ -1,43 +1,61 @@
 import {
   ActivityIndicator,
-  ScrollView,
+  FlatList,
   StyleSheet,
   TextInput,
   View,
 } from 'react-native';
 
-import React, {useEffect, useState} from 'react';
-
-import QueueOptions from '../components/QueueOptions';
-import TestScreen from './TestScreen';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import QueueListView from '../components/QueueListView';
+import React, {useCallback} from 'react';
+import useCurrentQueue from '../hooks/useCurrentQueue';
 import TrackPlayer from 'react-native-track-player';
-import {useTrackContext} from '../hooks/useTrackContext';
+import QueueListView from '../components/QueueListView';
 
 const Queues = () => {
-  const {queue} = useTrackContext();
-  const [modalVisible, setModalVisible] = useState(false);
-  // console.log(queue);
-  function pressHandler() {
-    setModalVisible(!modalVisible);
-  }
-  if (queue) {
-    return (
-      <View style={{flex: 1}}>
-        <View>
-          <TextInput
-            style={styles.textInput}
-            placeholder="search in this queue..."
+  const {queue, trackIndex} = useCurrentQueue();
+  const renderItem = useCallback(
+    ({item, index}) => {
+      const borderColor = trackIndex === index ? '#B4E197' : 'transparent';
+      const color = trackIndex === index ? '#B4E197' : '#fff';
+      return (
+        <View style={{...styles.renderItemView, borderColor}}>
+          <QueueListView
+            color={color}
+            data={item}
+            onPress={() => {
+              handlePress(index);
+            }}
           />
         </View>
-        {/* <TestScreen queue={queue} /> */}
-        <QueueOptions modal={modalVisible} onPress={pressHandler} />
+      );
+    },
+    [handlePress, trackIndex],
+  );
+
+  const handlePress = async index => {
+    await TrackPlayer.skip(index);
+    TrackPlayer.play();
+  };
+
+  return (
+    <View style={{flex: 1}}>
+      <View>
+        <TextInput
+          style={styles.textInput}
+          placeholder="search in this queue..."
+        />
       </View>
-    );
-  } else {
-    return <ActivityIndicator />;
-  }
+      {queue && (
+        <FlatList
+          data={queue}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          extraData={trackIndex}
+        />
+      )}
+      {/* <TestScreen queue={queue} /> */}
+    </View>
+  );
 };
 
 export default Queues;
@@ -52,5 +70,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#666',
     borderRadius: 8,
+  },
+  renderItemView: {
+    borderRadius: 5,
+    borderWidth: 2,
+    paddingVertical: 5,
   },
 });
