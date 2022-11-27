@@ -40,7 +40,25 @@ export const PlaylistProvider = ({children}) => {
       console.log(err);
     }
   };
-  const value = {playlist, setPlaylist, createPlaylist};
+  const renamePlaylist = async (index, input) => {
+    try {
+      const playlistJson = await AsyncStorage.getItem(
+        storageKeys.PLAYLIST_LIST,
+      );
+      if (playlistJson != null) {
+        const playlist_array = JSON.parse(playlistJson);
+        playlist_array[index].name = input;
+        await AsyncStorage.setItem(
+          storageKeys.PLAYLIST_LIST,
+          JSON.stringify(playlist_array),
+        );
+        setPlaylist(playlist_array);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const value = {playlist, setPlaylist, createPlaylist, renamePlaylist};
   return (
     <PlaylistContext.Provider value={value}>
       {children}

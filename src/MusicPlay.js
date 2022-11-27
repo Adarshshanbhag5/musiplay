@@ -11,7 +11,7 @@ import FoldersNavigator from './screens/foldres/FoldersNavigator';
 import PlaylistsNavigator from './screens/playlists/PlaylistsNavigator';
 import SetupService from './services/SetupService';
 import TrackPlayer from 'react-native-track-player';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator, Text, View} from 'react-native';
 import InitialQueueService from './services/InitialqueueService';
 import {useFileSystem} from './hooks/useFileSystem';
 
@@ -27,7 +27,7 @@ const MusicPlay = () => {
         setIsPlayerReady(isSetup);
         const Queue = await TrackPlayer.getQueue();
         if (isSetup && Queue.length <= 0) {
-          console.log('inside initialQueueServices');
+          // console.log('inside initialQueueServices');
           // await InitialQueueService();
           await Promise.all([getAllSongs(), InitialQueueService()]);
         }
@@ -41,7 +41,8 @@ const MusicPlay = () => {
   if (!isPlayerReady || dataLoading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator />
+        <ActivityIndicator size={'large'} />
+        <Text style={{marginVertical: 10}}>Loading...</Text>
       </View>
     );
   } else {
@@ -71,7 +72,7 @@ const MusicPlay = () => {
               name="NowPlaying"
               component={NowPlaying}
               options={{
-                tabBarStyle: {backgroundColor: 'transparent'},
+                tabBarStyle: {backgroundColor: 'rgba(0,0,0,0)'},
                 tabBarShowLabel: false,
                 tabBarIcon: ({color}) => (
                   <MaterialIcons

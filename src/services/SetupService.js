@@ -11,7 +11,6 @@ async function SetupService() {
     isSetup = true;
   } catch {
     await TrackPlayer.setupPlayer();
-    console.log('inside options');
     await TrackPlayer.updateOptions({
       android: {
         appKilledPlaybackBehavior: AppKilledPlaybackBehavior.PausePlayback,
@@ -25,6 +24,8 @@ async function SetupService() {
         Capability.SeekTo,
         Capability.Skip,
         Capability.SetRating,
+        Capability.JumpBackward,
+        Capability.JumpForward,
       ],
       compactCapabilities: [
         Capability.Play,
@@ -32,6 +33,7 @@ async function SetupService() {
         Capability.Stop,
         Capability.SkipToNext,
         Capability.SkipToPrevious,
+        Capability.SetRating,
       ],
       notificationCapabilities: [
         Capability.Play,

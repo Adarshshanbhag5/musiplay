@@ -8,10 +8,14 @@ import {useNavigation} from '@react-navigation/native';
 const PlayerControlUp = ({track}) => {
   const navigation = useNavigation();
   const addPlaylist = () => {
-    navigation.navigate('addPlaylist-modal', {data: track});
+    if (track) {
+      navigation.navigate('addPlaylist-modal', {data: track});
+    }
   };
   const optionPress = () => {
-    navigation.navigate('option-modal', {data: track});
+    if (track) {
+      navigation.navigate('option-modal', {data: track});
+    }
   };
   return (
     <View style={[globalStyle.flex__row__space, styles.container]}>

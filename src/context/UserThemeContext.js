@@ -6,7 +6,6 @@ const defaultTheme = {
 export const UserThemeContext = createContext();
 export const UserThemeProvider = ({children}) => {
   const [userTheme, setUserTheme] = useState(defaultTheme);
-  console.log(userTheme);
   const value = {userTheme, setUserTheme};
   return (
     <UserThemeContext.Provider value={value}>

@@ -39,7 +39,10 @@ const PlayerControlBottom = () => {
       <TouchableHighlight
         underlayColor={underlay}
         style={styles.touchAble}
-        onPress={() => {}}>
+        onPress={async () => {
+          const position = (await TrackPlayer.getPosition()) - 10;
+          TrackPlayer.seekTo(position);
+        }}>
         <MaterialIcons name="fast-rewind" color={'#fff'} size={26} />
       </TouchableHighlight>
       <TouchableHighlight
@@ -55,7 +58,10 @@ const PlayerControlBottom = () => {
       <TouchableHighlight
         underlayColor={underlay}
         style={styles.touchAble}
-        onPress={() => {}}>
+        onPress={async () => {
+          const position = (await TrackPlayer.getPosition()) + 10;
+          TrackPlayer.seekTo(position);
+        }}>
         <MaterialIcons name="fast-forward" color={'#fff'} size={26} />
       </TouchableHighlight>
       <TouchableHighlight
