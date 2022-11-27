@@ -1,4 +1,10 @@
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ToastAndroid,
+} from 'react-native';
 import React, {useState} from 'react';
 import globalStyle from '../../utils/GlobalStyle';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -11,12 +17,17 @@ import Touch from '../../utils/Touch';
 const AddPlaylistModal = ({route, navigation}) => {
   const [selectId, setSelectId] = useState(null);
   const {playlist} = usePlaylistContext();
-  // console.log(route.params.data);
+
   async function okHandler() {
     if (selectId != null) {
       await PlaylistAddService(route.params.data.id, selectId);
     }
     close();
+    ToastAndroid.showWithGravity(
+      'Done!',
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+    );
   }
   function close() {
     navigation.goBack();

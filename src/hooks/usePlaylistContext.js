@@ -14,8 +14,33 @@ export const PlaylistProvider = ({children}) => {
   useEffect(() => {
     getPlaylist();
   }, []);
-  const createPlaylist = async () => {};
-  const value = {playlist, setPlaylist};
+  const createPlaylist = async playlistObj => {
+    try {
+      const playlistJson = await AsyncStorage.getItem(
+        storageKeys.PLAYLIST_LIST,
+      );
+      if (playlistJson != null) {
+        const playlist_array = JSON.parse(playlistJson);
+        playlist_array.push(playlistObj);
+        await AsyncStorage.setItem(
+          storageKeys.PLAYLIST_LIST,
+          JSON.stringify(playlist_array),
+        );
+        setPlaylist(playlist_array);
+      } else {
+        const playlist_array = [];
+        playlist_array.push(playlistObj);
+        await AsyncStorage.setItem(
+          storageKeys.PLAYLIST_LIST,
+          JSON.stringify(playlist_array),
+        );
+        setPlaylist(playlist_array);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const value = {playlist, setPlaylist, createPlaylist};
   return (
     <PlaylistContext.Provider value={value}>
       {children}

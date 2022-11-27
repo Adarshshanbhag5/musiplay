@@ -4,69 +4,50 @@ import {
   StyleSheet,
   ActivityIndicator,
   TextInput,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState} from 'react';
 import Touch from '../../utils/Touch';
 import globalStyle from '../../utils/GlobalStyle';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import storageKeys from '../../utils/StorageKeys';
 import GenerateUniqueId from '../../utils/GenerateUniqueId';
 import ModalWrap from '../../components/ModalWrap';
 import {usePlaylistContext} from '../../hooks/usePlaylistContext';
 
 export default function InputModal({navigation}) {
-  const {setPlaylist} = usePlaylistContext();
+  const {createPlaylist} = usePlaylistContext();
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  async function createPlaylist(playlist) {
-    try {
-      setLoading(true);
-      const playlistJson = await AsyncStorage.getItem(
-        storageKeys.PLAYLIST_LIST,
-      );
-      if (playlistJson != null) {
-        const playlist_array = JSON.parse(playlistJson);
-        playlist_array.push(playlist);
-        await AsyncStorage.setItem(
-          storageKeys.PLAYLIST_LIST,
-          JSON.stringify(playlist_array),
-        );
-        setPlaylist(playlist_array);
-      } else {
-        const playlist_array = [];
-        playlist_array.push(playlist);
-        await AsyncStorage.setItem(
-          storageKeys.PLAYLIST_LIST,
-          JSON.stringify(playlist_array),
-        );
-        setPlaylist(playlist_array);
-      }
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  }
-  function okPressHandler() {
+
+  async function okPressHandler() {
     if (input != '') {
       const playlistObj = {
         name: input,
         key: GenerateUniqueId(),
       };
-      createPlaylist(playlistObj)
-        .then(() => {
-          console.log('done');
-          navigation.goBack();
-        })
-        .catch(err => {
-          console.log(err);
-          navigation.goBack();
-        });
+      try {
+        setLoading(true);
+        await createPlaylist(playlistObj);
+        ToastAndroid.showWithGravity(
+          'Done!',
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+        );
+      } catch (err) {
+        ToastAndroid.showWithGravity(
+          `${err}`,
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+        );
+      } finally {
+        setLoading(false);
+        navigation.goBack();
+      }
     } else {
-      console.log('oops!');
-      AsyncStorage.getItem(storageKeys.PLAYLIST_LIST).then(res => {
-        console.log(res);
-      });
+      ToastAndroid.showWithGravity(
+        'oops! something went wrong',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM,
+      );
     }
   }
   return (

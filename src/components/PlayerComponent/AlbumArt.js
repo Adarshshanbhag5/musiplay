@@ -18,7 +18,7 @@ const AlbumArt = ({artwork}) => {
         style={
           isPlaying
             ? {...styles.albumArt}
-            : {...styles.albumArt, width: '80%', height: 300}
+            : {...styles.albumArt, transform: [{scale: 0.9}]}
         }
       />
     </View>

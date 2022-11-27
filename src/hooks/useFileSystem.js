@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, {createContext, useContext, useState} from 'react';
 import {NativeModules, Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 import convertMsToTime from '../utils/DurationFromater';
@@ -7,7 +7,7 @@ export const useFileSystem = () => useContext(FileSystemContext);
 const {RNGetAudioFiles} = NativeModules;
 export function FileSystemProvider({children}) {
   const [data, setData] = useState([]);
-  const [dataLoading, setDataLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(false);
   const [fsData, setFsData] = useState([]);
   // useEffect(() => {
   //   async function getAllSongs() {
