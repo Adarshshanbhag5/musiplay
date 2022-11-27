@@ -9,25 +9,37 @@ export function FileSystemProvider({children}) {
   const [data, setData] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [fsData, setFsData] = useState([]);
-  useEffect(() => {
-    async function getAllSongs() {
-      try {
-        const res = await getSongs();
-        setData(res);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setDataLoading(false);
-      }
-    }
-    getAllSongs();
-  }, []);
+  // useEffect(() => {
+  //   async function getAllSongs() {
+  //     try {
+  //       const res = await getSongs();
+  //       setData(res);
+  //     } catch (err) {
+  //       console.log(err);
+  //     } finally {
+  //       setDataLoading(false);
+  //     }
+  //   }
+  //   getAllSongs();
+  // }, []);
 
-  useEffect(() => {
-    if (data) {
-      setFs();
+  // useEffect(() => {
+  //   if (data) {
+  //     setFs();
+  //   }
+  // }, [data]);
+
+  async function getAllSongs() {
+    try {
+      const res = await getSongs();
+      setFs(res);
+      setData(res);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setDataLoading(false);
     }
-  }, [data]);
+  }
 
   async function readdir(path) {
     try {
@@ -55,12 +67,12 @@ export function FileSystemProvider({children}) {
     });
   }
 
-  async function setFs() {
-    if (data) {
+  async function setFs(res) {
+    if (res) {
       const rootPath = RNFS.ExternalStorageDirectoryPath;
       let result = [
         ...new Set(
-          data.map(
+          res.map(
             item =>
               item.url.replace('file://', '').match(/(.*)[\/\\]/)[1] || '',
           ),
@@ -68,7 +80,7 @@ export function FileSystemProvider({children}) {
       ];
       let arr = [];
       result.forEach(item => {
-        let totalFiles = data.filter(
+        let totalFiles = res.filter(
           val =>
             item === val.url.replace('file://', '').match(/(.*)[\/\\]/)[1] ||
             '',
@@ -92,7 +104,7 @@ export function FileSystemProvider({children}) {
     }
   }
 
-  const value = {readdir, data, dataLoading, fsData};
+  const value = {readdir, data, dataLoading, fsData, getAllSongs};
   return (
     <FileSystemContext.Provider value={value}>
       {children}

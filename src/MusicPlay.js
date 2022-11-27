@@ -19,7 +19,7 @@ const Tab = createMaterialTopTabNavigator();
 
 const MusicPlay = () => {
   const [isPlayerReady, setIsPlayerReady] = useState(false);
-  const {dataLoading} = useFileSystem();
+  const {dataLoading, getAllSongs} = useFileSystem();
   useEffect(() => {
     async function setUpPlayer() {
       try {
@@ -28,7 +28,8 @@ const MusicPlay = () => {
         const Queue = await TrackPlayer.getQueue();
         if (isSetup && Queue.length <= 0) {
           console.log('inside initialQueueServices');
-          await InitialQueueService();
+          // await InitialQueueService();
+          await Promise.all([getAllSongs(), InitialQueueService()]);
         }
       } catch (err) {
         console.log(err);

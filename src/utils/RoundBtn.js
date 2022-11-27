@@ -11,7 +11,7 @@ const RoundBtn = ({iconName, iconColor, bg, style, onPress}) => {
       <View
         style={{
           ...styles.btn__container,
-          backgroundColor: bg ? bg : '#7cfc00',
+          backgroundColor: bg ? bg : '#65ffa0',
         }}>
         <MaterialIcons name={iconName} color={iconColor} size={28} />
       </View>

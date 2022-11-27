@@ -8,7 +8,7 @@ const MoreOptionsInner = ({navigation}) => {
     <>
       <Touch
         onPress={() => {
-          navigation.navigate('settings');
+          navigation.navigate('Appsettings');
         }}>
         <View style={styles.options__container}>
           <MaterialIcons name="settings" color={'#fff'} size={28} />

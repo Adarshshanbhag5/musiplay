@@ -2,7 +2,6 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useContext} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import globalStyle from '../utils/GlobalStyle';
-import {TouchableHighlight} from 'react-native-gesture-handler';
 import RoundBtn from '../utils/RoundBtn';
 import {StoragePermissionContext} from '../context/StoragePermissionContext';
 

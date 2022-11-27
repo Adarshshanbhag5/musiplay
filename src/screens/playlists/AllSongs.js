@@ -6,7 +6,6 @@ import AddQueueService from '../../services/AddQueueService';
 
 const AllSongs = ({navigation}) => {
   const {data} = useFileSystem();
-
   const renderItem = useCallback(
     ({item, index}) => (
       <SongListView
@@ -19,12 +18,10 @@ const AllSongs = ({navigation}) => {
     [handlePress],
   );
   async function handlePress(startIndex) {
-    console.log(startIndex);
     await AddQueueService(data, startIndex);
     navigation.navigate('NowPlaying');
   }
 
-  console.log('rerendered!');
   return (
     <View style={{flex: 1}}>
       <View style={styles.innerContainer}>

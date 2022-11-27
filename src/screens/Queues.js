@@ -6,17 +6,20 @@ import {
   View,
 } from 'react-native';
 
-import React, {useCallback} from 'react';
+import React, {useCallback, useContext} from 'react';
 import useCurrentQueue from '../hooks/useCurrentQueue';
 import TrackPlayer from 'react-native-track-player';
 import QueueListView from '../components/QueueListView';
+import {UserThemeContext} from '../context/UserThemeContext';
 
 const Queues = () => {
   const {queue, trackIndex} = useCurrentQueue();
+  const {userTheme} = useContext(UserThemeContext);
   const renderItem = useCallback(
     ({item, index}) => {
-      const borderColor = trackIndex === index ? '#B4E197' : 'transparent';
-      const color = trackIndex === index ? '#B4E197' : '#fff';
+      const borderColor =
+        trackIndex === index ? userTheme.accentColor : 'transparent';
+      const color = trackIndex === index ? userTheme.accentColor : '#fff';
       return (
         <View style={{...styles.renderItemView, borderColor}}>
           <QueueListView
@@ -29,7 +32,7 @@ const Queues = () => {
         </View>
       );
     },
-    [handlePress, trackIndex],
+    [handlePress, trackIndex, userTheme],
   );
 
   const handlePress = async index => {

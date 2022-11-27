@@ -6,6 +6,7 @@ const PlaylistContext = createContext();
 export const usePlaylistContext = () => useContext(PlaylistContext);
 export const PlaylistProvider = ({children}) => {
   const [playlist, setPlaylist] = useState([]);
+  // const [loading, setLoading] = useState(false);
   async function getPlaylist() {
     const res = await AsyncStorage.getItem(storageKeys.PLAYLIST_LIST);
     setPlaylist(JSON.parse(res));
@@ -13,6 +14,7 @@ export const PlaylistProvider = ({children}) => {
   useEffect(() => {
     getPlaylist();
   }, []);
+  const createPlaylist = async () => {};
   const value = {playlist, setPlaylist};
   return (
     <PlaylistContext.Provider value={value}>

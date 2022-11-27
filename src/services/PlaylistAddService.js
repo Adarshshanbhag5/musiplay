@@ -6,7 +6,8 @@ export default async function PlaylistAddService(playlist, storageKey) {
     if (playlistJson != null) {
       const playlist_array = JSON.parse(playlistJson);
       playlist_array.push(playlist);
-      await AsyncStorage.setItem(storageKey, JSON.stringify(playlist_array));
+      const unique = [...new Set(playlist_array)];
+      await AsyncStorage.setItem(storageKey, JSON.stringify(unique));
     } else {
       const playlist_array = [];
       playlist_array.push(playlist);

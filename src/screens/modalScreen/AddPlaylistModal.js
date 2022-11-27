@@ -54,7 +54,6 @@ const AddPlaylistModal = ({route, navigation}) => {
           <Text style={styles.text}>Ok</Text>
         </Touch>
       </View>
-      {/* <ModalControlBtn cancelPress={close} okPress={okHandler} /> */}
     </ModalWrap>
   );
 };

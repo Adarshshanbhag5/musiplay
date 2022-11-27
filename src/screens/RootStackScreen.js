@@ -8,6 +8,8 @@ import InputModal from './modalScreen/InputModal';
 import PlaylistLongPressModal from './modalScreen/PlaylistLongPressModal';
 import OptionModal from './modalScreen/OptionModal';
 import AddPlaylistModal from './modalScreen/AddPlaylistModal';
+import ColorPalletModal from './modalScreen/ColorPalletModal';
+
 const RootStack = createNativeStackNavigator();
 const RootStackScreen = () => {
   return (
@@ -34,6 +36,10 @@ const RootStackScreen = () => {
               <RootStack.Screen
                 name="addPlaylist-modal"
                 component={AddPlaylistModal}
+              />
+              <RootStack.Screen
+                name="colorpalletmodal"
+                component={ColorPalletModal}
               />
             </RootStack.Group>
           </RootStack.Navigator>
