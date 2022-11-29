@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
+import {useNavigation} from '@react-navigation/native';
 
 const QueueListView = ({
   // height,
@@ -15,6 +16,10 @@ const QueueListView = ({
   onPress,
   data,
 }) => {
+  const navigation = useNavigation();
+  const handleOptionPress = () => {
+    navigation.navigate('option-modal', {data});
+  };
   return (
     <Pressable
       onPress={onPress}
@@ -68,7 +73,7 @@ const QueueListView = ({
           </View>
         </View>
         <View>
-          <TouchableHighlight onPress={() => {}}>
+          <TouchableHighlight onPress={handleOptionPress}>
             <MaterialIcons
               name="more-horiz"
               color={'#000'}

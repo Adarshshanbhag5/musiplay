@@ -16,6 +16,7 @@ const Folders = ({navigation}) => {
           handlePress(item);
         }}
         name={item.folderHierarchy[0]}
+        path={item.path}
       />
     ),
     [handlePress],
@@ -31,7 +32,7 @@ const Folders = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <View style={styles.header}>
-        <MaterialIcons name="folder-special" color={'#fff'} size={28} />
+        <MaterialIcons name="folder-special" color={'#fff'} size={26} />
         <Text style={styles.header__text}>Internal Storage</Text>
       </View>
       <View style={styles.innerContainer}>
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
   header__text: {
     marginLeft: 10,
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: 20,
     color: '#fff',
   },
   innerContainer: {

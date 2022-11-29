@@ -37,7 +37,16 @@ const PlaylistLongPressModal = ({route, navigation}) => {
           borderBottomWidth: 1,
           borderColor: '#555',
         }}>
-        <OptionsView text="Rename playlist" icon="edit" />
+        <OptionsView
+          text="Rename playlist"
+          icon="edit"
+          onPress={() => {
+            navigation.replace('input-text', {
+              type: 'renamePlaylist',
+              playlistIndex: route.params.data.index,
+            });
+          }}
+        />
         <OptionsView
           text="Remove playlist"
           icon="remove-circle-outline"

@@ -25,11 +25,14 @@ const MusicPlay = () => {
       try {
         const isSetup = await SetupService();
         setIsPlayerReady(isSetup);
-        const Queue = await TrackPlayer.getQueue();
-        if (isSetup && Queue.length <= 0) {
-          // console.log('inside initialQueueServices');
-          // await InitialQueueService();
-          await Promise.all([getAllSongs(), InitialQueueService()]);
+        // const Queue = await TrackPlayer.getQueue();
+        // await getAllSongs();
+        const response = await Promise.all([
+          TrackPlayer.getQueue(),
+          getAllSongs(),
+        ]);
+        if (isSetup && response[0].length <= 0) {
+          await InitialQueueService();
         }
       } catch (err) {
         console.log(err);
@@ -42,7 +45,9 @@ const MusicPlay = () => {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator size={'large'} />
-        <Text style={{marginVertical: 10}}>Loading...</Text>
+        <Text style={{marginVertical: 10, color: '#fff', fontSize: 16}}>
+          Loading...
+        </Text>
       </View>
     );
   } else {
@@ -55,12 +60,12 @@ const MusicPlay = () => {
             screenOptions={{
               tabBarStyle: {backgroundColor: '#111'},
               tabBarIndicatorStyle: {backgroundColor: '#7cfc00'},
+              tabBarShowLabel: false,
             }}>
             <Tab.Screen
               name="Queue"
               component={Queues}
               options={{
-                tabBarShowLabel: false,
                 tabBarIcon: ({color}) => (
                   <MaterialIcons name="queue-music" color={color} size={26} />
                 ),
@@ -73,7 +78,6 @@ const MusicPlay = () => {
               component={NowPlaying}
               options={{
                 tabBarStyle: {backgroundColor: 'rgba(0,0,0,0)'},
-                tabBarShowLabel: false,
                 tabBarIcon: ({color}) => (
                   <MaterialIcons
                     name="play-circle-fill"
@@ -87,7 +91,6 @@ const MusicPlay = () => {
               name="FoldersNavigator"
               component={FoldersNavigator}
               options={{
-                tabBarShowLabel: false,
                 tabBarIcon: ({color}) => (
                   <MaterialIcons name="folder" color={color} size={26} />
                 ),
@@ -97,7 +100,6 @@ const MusicPlay = () => {
               name="Search"
               component={Search}
               options={{
-                tabBarShowLabel: false,
                 tabBarIcon: ({color}) => (
                   <MaterialIcons name="search" color={color} size={26} />
                 ),
@@ -107,7 +109,6 @@ const MusicPlay = () => {
               name="PlaylistsNavigator"
               component={PlaylistsNavigator}
               options={{
-                tabBarShowLabel: false,
                 tabBarIcon: ({color}) => (
                   <MaterialIcons name="library-music" color={color} size={26} />
                 ),
@@ -118,7 +119,6 @@ const MusicPlay = () => {
               component={MoreOptions}
               options={{
                 swipeEnabled: false,
-                tabBarShowLabel: false,
                 tabBarIcon: ({color}) => (
                   <MaterialIcons name="more" color={color} size={24} />
                 ),

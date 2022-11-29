@@ -4,6 +4,8 @@ import React, {useCallback, useContext, useState} from 'react';
 import SongListView from '../../components/SongListView';
 import AddQueueService from '../../services/AddQueueService';
 
+const ITEM_HEIGHT = 90;
+
 const FolderInner = ({route, navigation}) => {
   async function handlePress(startIndex) {
     let track = route.params.data.files;
@@ -23,13 +25,14 @@ const FolderInner = ({route, navigation}) => {
     [handlePress],
   );
 
-  // console.log(route.params.data);
-
   return (
     <View style={{flex: 1}}>
       <View style={styles.header__container}>
         <Text
-          style={styles.path__text}>{`Path: ${route.params.data.path}`}</Text>
+          style={styles.path__text}>{`Path: ${route.params.data.path.replace(
+          '/storage/emulated/0',
+          'internal storage',
+        )}`}</Text>
         <View style={styles.details__container}>
           <Text
             style={{
@@ -46,13 +49,13 @@ const FolderInner = ({route, navigation}) => {
           data={route.params.data.files}
           renderItem={renderItem}
           keyExtractor={item => item.id}
+          getItemLayout={(_, index) => ({
+            length: ITEM_HEIGHT,
+            offset: ITEM_HEIGHT * index,
+            index,
+          })}
         />
       }
-      {/* <OptionsModal
-        modal={state.modalOpen}
-        data={state.optionData}
-        modalCase={state.modalCase}
-      /> */}
     </View>
   );
 };

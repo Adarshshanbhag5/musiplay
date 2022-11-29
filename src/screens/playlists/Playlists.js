@@ -12,7 +12,10 @@ const Playlists = ({navigation}) => {
   const {playlist} = usePlaylistContext();
 
   function createNewPlaylist() {
-    navigation.navigate('input-text');
+    navigation.navigate('input-text', {
+      type: 'newPlaylist',
+      playlistIndex: null,
+    });
   }
 
   function playlistLongPress(data, index) {
@@ -29,26 +32,26 @@ const Playlists = ({navigation}) => {
           <MaterialCommunityIcons
             name="folder-music"
             color={'#fff'}
-            size={32}
+            size={30}
           />
           <Text style={styles.list__container__text}>All songs</Text>
         </View>
       </Touch>
       <Touch>
         <View style={[GlobalStyle.flex__row__start, styles.list__container]}>
-          <MaterialIcons name="favorite" color={'#fff'} size={32} />
+          <MaterialIcons name="favorite" color={'#fff'} size={30} />
           <Text style={styles.list__container__text}>Favorites</Text>
         </View>
       </Touch>
       <Touch>
         <View style={[GlobalStyle.flex__row__start, styles.list__container]}>
-          <MaterialIcons name="whatshot" color={'#fff'} size={32} />
+          <MaterialIcons name="whatshot" color={'#fff'} size={30} />
           <Text style={styles.list__container__text}>Most Played</Text>
         </View>
       </Touch>
       <Touch>
         <View style={[GlobalStyle.flex__row__start, styles.list__container]}>
-          <MaterialIcons name="not-interested" color={'#fff'} size={32} />
+          <MaterialIcons name="not-interested" color={'#fff'} size={30} />
           <Text style={styles.list__container__text}>Not Played</Text>
         </View>
       </Touch>
@@ -96,7 +99,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
   },
   list__container__text: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#fff',
     marginLeft: 15,
   },

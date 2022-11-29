@@ -118,7 +118,7 @@ public class RNGetAudioFilesModule extends ReactContextBaseJavaModule {
                     if (success) {
                         String pathToImg = covers.getAbsolutePath() + "/covers" + songId + ".jpg";
                         encoded = saveImageToStorageAndGetPath(pathToImg, resized);
-                        items.putString("cover", "file://" + encoded);
+                        items.putString("artwork", "file://" + encoded);
                     } else {
                         // Do something else on failure
                         Log.e("failure","no success failure");

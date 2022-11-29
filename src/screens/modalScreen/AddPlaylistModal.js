@@ -46,7 +46,10 @@ const AddPlaylistModal = ({route, navigation}) => {
       )}
       <TouchableOpacity
         onPress={() => {
-          navigation.replace('input-text');
+          navigation.replace('input-text', {
+            type: 'newPlaylist',
+            playlistIndex: null,
+          });
         }}>
         <View style={[globalStyle.flex__row__space, styles.add__playlist__btn]}>
           <MaterialIcons

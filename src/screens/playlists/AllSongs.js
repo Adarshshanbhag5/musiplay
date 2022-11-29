@@ -4,6 +4,8 @@ import SongListView from '../../components/SongListView';
 import {useFileSystem} from '../../hooks/useFileSystem';
 import AddQueueService from '../../services/AddQueueService';
 
+const ITEM_HEIGHT = 90;
+
 const AllSongs = ({navigation}) => {
   const {data} = useFileSystem();
   const renderItem = useCallback(
@@ -34,6 +36,11 @@ const AllSongs = ({navigation}) => {
           keyExtractor={item => item.id}
           data={data}
           renderItem={renderItem}
+          getItemLayout={(_, index) => ({
+            length: ITEM_HEIGHT,
+            offset: ITEM_HEIGHT * index,
+            index,
+          })}
         />
       )}
     </View>

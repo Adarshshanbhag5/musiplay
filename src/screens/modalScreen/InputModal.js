@@ -13,20 +13,25 @@ import GenerateUniqueId from '../../utils/GenerateUniqueId';
 import ModalWrap from '../../components/ModalWrap';
 import {usePlaylistContext} from '../../hooks/usePlaylistContext';
 
-export default function InputModal({navigation}) {
-  const {createPlaylist} = usePlaylistContext();
+export default function InputModal({route, navigation}) {
+  const {createPlaylist, renamePlaylist} = usePlaylistContext();
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function okPressHandler() {
     if (input != '') {
-      const playlistObj = {
-        name: input,
-        key: GenerateUniqueId(),
-      };
       try {
         setLoading(true);
-        await createPlaylist(playlistObj);
+        switch (route.params.type) {
+          case 'newPlaylist':
+            const playlistObj = {
+              name: input,
+              key: GenerateUniqueId(),
+            };
+            await createPlaylist(playlistObj);
+          case 'renamePlaylist':
+            await renamePlaylist(route.params.playlistIndex, input);
+        }
         ToastAndroid.showWithGravity(
           'Done!',
           ToastAndroid.SHORT,
