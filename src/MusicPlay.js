@@ -52,81 +52,79 @@ const MusicPlay = () => {
     );
   } else {
     return (
-      <GestureHandlerRootView style={{flex: 1}}>
-        <SafeAreaProvider>
-          <Tab.Navigator
-            tabBarPosition="bottom"
-            initialRouteName="NowPlaying"
-            screenOptions={{
-              tabBarStyle: {backgroundColor: '#111'},
-              tabBarIndicatorStyle: {backgroundColor: '#7cfc00'},
-              tabBarShowLabel: false,
-            }}>
-            <Tab.Screen
-              name="Queue"
-              component={Queues}
-              options={{
-                tabBarIcon: ({color}) => (
-                  <MaterialIcons name="queue-music" color={color} size={26} />
-                ),
-                lazy: true,
-                lazyPlaceholder: () => <ActivityIndicator />,
-              }}
-            />
-            <Tab.Screen
-              name="NowPlaying"
-              component={NowPlaying}
-              options={{
-                tabBarStyle: {backgroundColor: 'rgba(0,0,0,0)'},
-                tabBarIcon: ({color}) => (
-                  <MaterialIcons
-                    name="play-circle-fill"
-                    color={color}
-                    size={26}
-                  />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="FoldersNavigator"
-              component={FoldersNavigator}
-              options={{
-                tabBarIcon: ({color}) => (
-                  <MaterialIcons name="folder" color={color} size={26} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Search"
-              component={Search}
-              options={{
-                tabBarIcon: ({color}) => (
-                  <MaterialIcons name="search" color={color} size={26} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="PlaylistsNavigator"
-              component={PlaylistsNavigator}
-              options={{
-                tabBarIcon: ({color}) => (
-                  <MaterialIcons name="library-music" color={color} size={26} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="moreOptions"
-              component={MoreOptions}
-              options={{
-                swipeEnabled: false,
-                tabBarIcon: ({color}) => (
-                  <MaterialIcons name="more" color={color} size={24} />
-                ),
-              }}
-            />
-          </Tab.Navigator>
-        </SafeAreaProvider>
-      </GestureHandlerRootView>
+      <SafeAreaProvider>
+        <Tab.Navigator
+          tabBarPosition="bottom"
+          initialRouteName="NowPlaying"
+          screenOptions={{
+            tabBarStyle: {backgroundColor: '#111'},
+            tabBarIndicatorStyle: {backgroundColor: '#7cfc00'},
+            tabBarShowLabel: false,
+          }}>
+          <Tab.Screen
+            name="Queue"
+            component={Queues}
+            options={{
+              tabBarIcon: ({color}) => (
+                <MaterialIcons name="queue-music" color={color} size={26} />
+              ),
+              lazy: true,
+              lazyPlaceholder: () => <ActivityIndicator />,
+            }}
+          />
+          <Tab.Screen
+            name="NowPlaying"
+            component={NowPlaying}
+            options={{
+              tabBarStyle: {backgroundColor: 'rgba(0,0,0,0)'},
+              tabBarIcon: ({color}) => (
+                <MaterialIcons
+                  name="play-circle-fill"
+                  color={color}
+                  size={26}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="FoldersNavigator"
+            component={FoldersNavigator}
+            options={{
+              tabBarIcon: ({color}) => (
+                <MaterialIcons name="folder" color={color} size={26} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Search"
+            component={Search}
+            options={{
+              tabBarIcon: ({color}) => (
+                <MaterialIcons name="search" color={color} size={26} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="PlaylistsNavigator"
+            component={PlaylistsNavigator}
+            options={{
+              tabBarIcon: ({color}) => (
+                <MaterialIcons name="library-music" color={color} size={26} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="moreOptions"
+            component={MoreOptions}
+            options={{
+              swipeEnabled: false,
+              tabBarIcon: ({color}) => (
+                <MaterialIcons name="more" color={color} size={24} />
+              ),
+            }}
+          />
+        </Tab.Navigator>
+      </SafeAreaProvider>
     );
   }
 };

@@ -30,14 +30,15 @@ const QueueListView = ({
       ]}>
       <View style={{...styles.listContainer}}>
         <View style={styles.innerContainer}>
-          <View>
+          {/* <GestureDetector gesture={gesture}>
             <MaterialIcons
               name="drag-handle"
               color={color}
               size={24}
-              style={{marginRight: 10}}
+              style={{marginRight: 10, backgroundColor: 'green', padding: 5}}
             />
-          </View>
+          </GestureDetector> */}
+
           <Image
             source={
               data.artwork
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: 15,
+    marginHorizontal: 10,
   },
   albumArt: {
     width: 50,
