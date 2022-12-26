@@ -11,6 +11,7 @@ async function AddQueueService(queue, startIndex) {
     if (startIndex) {
       await TrackPlayer.skip(startIndex);
     }
+    TrackPlayer.play();
     const jsonValue = JSON.stringify(queue);
     await AsyncStorage.setItem(QUEUE_KEY, jsonValue);
   } catch (err) {

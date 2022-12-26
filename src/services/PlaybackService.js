@@ -1,14 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TrackPlayer, {Event, State} from 'react-native-track-player';
+import AddQueueService from './AddQueueService';
 
+let queue = [];
+let queueDragged = false;
 let wasPausedByDuck = false;
 const LAST_TRACK = '@last_track';
+
+export const setDragFalg = (flag = false, draggedQueue) => {
+  queueDragged = flag;
+  queue = draggedQueue;
+};
 
 export default async function PlaybackService() {
   TrackPlayer.addEventListener(Event.RemotePause, () => {
     console.log('Event.RemotePause');
     TrackPlayer.pause();
-    console.log('paused');
   });
 
   TrackPlayer.addEventListener(Event.RemotePlay, () => {
@@ -76,6 +83,13 @@ export default async function PlaybackService() {
   TrackPlayer.addEventListener(Event.PlaybackTrackChanged, async event => {
     console.log('Event.PlaybackTrackChanged', event);
     await AsyncStorage.setItem(LAST_TRACK, `${event.nextTrack}`);
+    // console.log(queueDragged);
+    if (queueDragged) {
+      // console.log(event.nextTrack);
+      TrackPlayer.pause();
+      queueDragged = false;
+      AddQueueService(queue, event.nextTrack);
+    }
   });
 
   TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, event => {

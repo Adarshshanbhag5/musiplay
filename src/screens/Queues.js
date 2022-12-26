@@ -1,79 +1,54 @@
-import {FlatList, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Pressable, StyleSheet, TextInput, Vibration, View} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import useCurrentQueue from '../hooks/useCurrentQueue';
 import TrackPlayer from 'react-native-track-player';
 import QueueListView from '../components/QueueListView';
 import {UserThemeContext} from '../context/UserThemeContext';
-import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
-import {Gesture, GestureDetector} from 'react-native-gesture-handler';
-
-const ITEM_HEIGHT = 75;
+import DraggableFlatList from 'react-native-draggable-flatlist';
+import {setDragFalg} from '../services/PlaybackService';
 
 const Queues = () => {
   const {queue, trackIndex} = useCurrentQueue();
   const {userTheme} = useContext(UserThemeContext);
-  const [moving, setMoving] = useState(false);
-  const topValue = useSharedValue(0);
-  const panGesture = Gesture.Pan()
-    .activateAfterLongPress(500)
-    .onStart(() => {
-      // console.log('started!');
-      runOnJS(setMoving)(true);
-    })
-    .onChange(e => {
-      topValue.value = e.absoluteY - 90;
-    })
-    .onFinalize(() => {
-      // console.log('finalised!');
-      topValue.value = 0;
-      runOnJS(setMoving)(false);
-    })
-    .onEnd(() => {
-      // console.log('ended!');
-      topValue.value = 0;
-      runOnJS(setMoving)(false);
-    });
+  const [listData, setListData] = useState([]);
+  useEffect(() => {
+    setListData(queue);
+  }, [queue]);
 
-  const movingItem = useAnimatedStyle(() => ({
-    top: withSpring(topValue.value),
-  }));
-
-  const RenderItem = useCallback(
-    ({item, index}) => {
+  const renderItem = useCallback(
+    ({item, drag, isActive, getIndex}) => {
       const borderColor =
-        trackIndex === index ? userTheme.accentColor : 'transparent';
-      const color = trackIndex === index ? userTheme.accentColor : '#fff';
+        trackIndex === getIndex() ? userTheme.accentColor : 'transparent';
+      const color = trackIndex === getIndex() ? userTheme.accentColor : '#fff';
       return (
         <View style={{...styles.renderItemView, borderColor}}>
-          <GestureDetector gesture={panGesture}>
+          <Pressable
+            onLongPress={() => {
+              Vibration.vibrate(40);
+              drag();
+            }}
+            disabled={isActive}>
             <View
-              collapsable={false}
               style={{
-                backgroundColor: 'green',
-                padding: 10,
+                // backgroundColor: 'green',
+                paddingHorizontal: 5,
                 marginLeft: 10,
-                paddingHorizontal: 15,
               }}>
               <MaterialIcons name="drag-handle" color={color} size={24} />
             </View>
-          </GestureDetector>
+          </Pressable>
           <QueueListView
             color={color}
             data={item}
             onPress={() => {
-              handlePress(index);
+              handlePress(getIndex());
             }}
           />
         </View>
       );
     },
-    [handlePress, panGesture, userTheme],
+    [handlePress, userTheme, trackIndex],
   );
 
   const handlePress = async index => {
@@ -89,23 +64,20 @@ const Queues = () => {
           placeholder="search in this queue..."
         />
       </View>
-      {moving && (
-        <Animated.View style={[styles.movingView, movingItem]}>
-          <Text>Hello this is item</Text>
-        </Animated.View>
-      )}
-      {queue && (
-        <FlatList
-          scrollEnabled={!moving}
-          data={queue}
-          renderItem={RenderItem}
-          keyExtractor={item => item.id}
+      {listData && (
+        <DraggableFlatList
+          data={listData}
+          renderItem={renderItem}
           extraData={trackIndex}
-          getItemLayout={(_, index) => ({
-            length: ITEM_HEIGHT,
-            offset: ITEM_HEIGHT * index,
-            index,
-          })}
+          keyExtractor={item => item.id}
+          onDragEnd={({data, from, to}) => {
+            setListData(data);
+            if (from === to) {
+              setDragFalg(false, data);
+            } else {
+              setDragFalg(true, data);
+            }
+          }}
         />
       )}
     </View>
@@ -131,14 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     borderWidth: 2,
-    paddingVertical: 5,
+    paddingVertical: 2,
     zIndex: 5,
-  },
-  movingView: {
-    position: 'absolute',
-    width: '100%',
-    height: ITEM_HEIGHT,
-    zIndex: 10,
-    backgroundColor: 'pink',
   },
 });

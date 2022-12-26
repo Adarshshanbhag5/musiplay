@@ -28,17 +28,8 @@ const QueueListView = ({
           backgroundColor: pressed ? '#B4E197' : 'transparent',
         },
       ]}>
-      <View style={{...styles.listContainer}}>
+      <View style={styles.listContainer}>
         <View style={styles.innerContainer}>
-          {/* <GestureDetector gesture={gesture}>
-            <MaterialIcons
-              name="drag-handle"
-              color={color}
-              size={24}
-              style={{marginRight: 10, backgroundColor: 'green', padding: 5}}
-            />
-          </GestureDetector> */}
-
           <Image
             source={
               data.artwork
