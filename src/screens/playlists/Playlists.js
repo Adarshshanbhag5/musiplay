@@ -37,7 +37,10 @@ const Playlists = ({navigation}) => {
           <Text style={styles.list__container__text}>All songs</Text>
         </View>
       </Touch>
-      <Touch>
+      <Touch
+        onPress={() => {
+          navigation.navigate('favoritePlaylist');
+        }}>
         <View style={[GlobalStyle.flex__row__start, styles.list__container]}>
           <MaterialIcons name="favorite" color={'#fff'} size={30} />
           <Text style={styles.list__container__text}>Favorites</Text>

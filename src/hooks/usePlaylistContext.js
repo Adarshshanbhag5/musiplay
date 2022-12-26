@@ -6,11 +6,16 @@ const PlaylistContext = createContext();
 export const usePlaylistContext = () => useContext(PlaylistContext);
 export const PlaylistProvider = ({children}) => {
   const [playlist, setPlaylist] = useState([]);
-  // const [loading, setLoading] = useState(false);
+  const [favoriteList, setFavoriteList] = useState([]);
   async function getPlaylist() {
-    const res = await AsyncStorage.getItem(storageKeys.PLAYLIST_LIST);
-    setPlaylist(JSON.parse(res));
+    const res = await Promise.all([
+      AsyncStorage.getItem(storageKeys.PLAYLIST_LIST),
+      AsyncStorage.getItem(storageKeys.FAVORITE_KEY),
+    ]);
+    setPlaylist(JSON.parse(res[0]));
+    setFavoriteList(JSON.parse(res[1]));
   }
+
   useEffect(() => {
     getPlaylist();
   }, []);
@@ -58,7 +63,43 @@ export const PlaylistProvider = ({children}) => {
       console.log(err);
     }
   };
-  const value = {playlist, setPlaylist, createPlaylist, renamePlaylist};
+  const setFavoriteSong = async songId => {
+    try {
+      const favoriteJson = await AsyncStorage.getItem(storageKeys.FAVORITE_KEY);
+      if (favoriteJson != null) {
+        const favorite_array = JSON.parse(favoriteJson);
+        let sondIndex = favorite_array.indexOf(songId);
+        if (sondIndex > -1) {
+          favorite_array.splice(sondIndex, 1);
+        } else {
+          favorite_array.push(songId);
+        }
+        await AsyncStorage.setItem(
+          storageKeys.FAVORITE_KEY,
+          JSON.stringify(favorite_array),
+        );
+        setFavoriteList(favorite_array);
+      } else {
+        let favorite_array = [];
+        favorite_array.push(songId);
+        await AsyncStorage.setItem(
+          storageKeys.FAVORITE_KEY,
+          JSON.stringify(favorite_array),
+        );
+        setFavoriteList(favorite_array);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const value = {
+    favoriteList,
+    playlist,
+    setPlaylist,
+    createPlaylist,
+    renamePlaylist,
+    setFavoriteSong,
+  };
   return (
     <PlaylistContext.Provider value={value}>
       {children}

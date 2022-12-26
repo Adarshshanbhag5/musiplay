@@ -1,11 +1,21 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import ModalWrap from '../../components/ModalWrap';
 import OptionsView from '../../components/OptionsView';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import globalStyle from '../../utils/GlobalStyle';
+import {usePlaylistContext} from '../../hooks/usePlaylistContext';
 
 const OptionModal = ({route, navigation}) => {
+  const [heart, setHeart] = useState(false);
+  const {favoriteList, setFavoriteSong} = usePlaylistContext();
+  useEffect(() => {
+    if (favoriteList) {
+      favoriteList.includes(route.params.data.id)
+        ? setHeart(true)
+        : setHeart(false);
+    }
+  }, [favoriteList]);
   return (
     <ModalWrap navigation={navigation}>
       <View style={[globalStyle.flex__row__space, styles.header__container]}>
@@ -15,7 +25,14 @@ const OptionModal = ({route, navigation}) => {
           numberOfLines={1}>
           {route.params.data.title}
         </Text>
-        <MaterialIcons name="favorite-border" color={'#fff'} size={26} />
+        <MaterialIcons
+          name={heart ? 'favorite' : 'favorite-border'}
+          color={'#fff'}
+          size={26}
+          onPress={() => {
+            setFavoriteSong(route.params.data.id);
+          }}
+        />
       </View>
       <View
         style={{

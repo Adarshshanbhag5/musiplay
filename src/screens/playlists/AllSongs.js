@@ -3,6 +3,7 @@ import React, {useCallback} from 'react';
 import SongListView from '../../components/SongListView';
 import {useFileSystem} from '../../hooks/useFileSystem';
 import AddQueueService from '../../services/AddQueueService';
+import convertMsToTime from '../../utils/DurationFromater';
 
 const ITEM_HEIGHT = 90;
 
@@ -29,7 +30,11 @@ const AllSongs = ({navigation}) => {
       <View style={styles.innerContainer}>
         <Text
           style={styles.inner__container__text}>{`${data.length} songs`}</Text>
-        <Text style={styles.inner__container__text}>1:38:15</Text>
+        <Text style={styles.inner__container__text}>
+          {convertMsToTime(
+            data.reduce((total, val) => val.duration + total, 0),
+          )}
+        </Text>
       </View>
       {data && (
         <FlatList

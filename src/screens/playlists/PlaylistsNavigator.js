@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Playlists from './Playlists';
 import AllSongs from './AllSongs';
 import UserPlaylist from './UserPlaylist';
+import FavoritePlaylist from './FavoritePlaylist';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,11 @@ const PlaylistsNavigator = () => {
         name="userPlaylist"
         component={UserPlaylist}
         options={({route}) => ({headerTitle: route.params.data.name})}
+      />
+      <Stack.Screen
+        name="favoritePlaylist"
+        component={FavoritePlaylist}
+        options={{headerTitle: 'Favorite songs'}}
       />
     </Stack.Navigator>
   );

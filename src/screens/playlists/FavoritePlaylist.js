@@ -5,52 +5,40 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useFileSystem} from '../../hooks/useFileSystem';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {usePlaylistContext} from '../../hooks/usePlaylistContext';
 import SongListView from '../../components/SongListView';
 import AddQueueService from '../../services/AddQueueService';
 import convertMsToTime from '../../utils/DurationFromater';
 
-const UserPlaylist = ({route, navigation}) => {
+const FavoritePlaylist = ({navigation}) => {
   const [loading, setLoading] = useState(true);
-  const [playlistData, setPlaylistData] = useState([]);
+  const [favoriteData, setFavoriteData] = useState([]);
   const {data} = useFileSystem();
-  async function getPlaylistData() {
+  const {favoriteList} = usePlaylistContext();
+  function getFavoriteData() {
     try {
       setLoading(true);
-      const jsonValue = await AsyncStorage.getItem(route.params.data.key);
-      const playlist = JSON.parse(jsonValue);
-      const songs = data.filter(val => playlist.includes(val.id));
-      setPlaylistData(songs);
-    } catch (err) {
-      console.log(err);
+      const songs = data.filter(val => favoriteList.includes(val.id));
+      setFavoriteData(songs);
     } finally {
       setLoading(false);
     }
   }
 
+  useEffect(() => {
+    if (favoriteList) {
+      getFavoriteData();
+    }
+  }, [favoriteList]);
+
   async function handlePress(startIndex) {
-    let track = playlistData;
-    // .map(item => ({
-    //   id: item.id,
-    //   url: `file://${item.path}`,
-    //   duration: Math.floor(parseInt(item.duration, 10) / 1000),
-    //   title: item.title,
-    //   album: item.album,
-    //   artist: item.artist,
-    //   artwork: item.cover,
-    // }));
-    // await TrackPlayer.reset();
-    // await InitialQueueService(track);
-    // await TrackPlayer.skip(startIndex);
+    let track = favoriteData;
     console.log(startIndex);
     await AddQueueService(track, startIndex);
     navigation.navigate('NowPlaying');
   }
-  useEffect(() => {
-    getPlaylistData();
-  }, []);
 
   const renderItem = useCallback(
     ({item, index}) => (
@@ -63,6 +51,7 @@ const UserPlaylist = ({route, navigation}) => {
     ),
     [handlePress],
   );
+
   return (
     <View style={{flex: 1}}>
       {loading ? (
@@ -73,32 +62,27 @@ const UserPlaylist = ({route, navigation}) => {
             <Text
               style={
                 styles.inner__container__text
-              }>{`${playlistData.length} songs`}</Text>
+              }>{`${favoriteData.length} songs`}</Text>
             <Text style={styles.inner__container__text}>
               {convertMsToTime(
-                playlistData.reduce((total, val) => val.duration + total, 0),
+                favoriteData.reduce((total, val) => val.duration + total, 0),
               )}
             </Text>
           </View>
-          {playlistData && (
+          {favoriteData && (
             <FlatList
-              data={playlistData}
+              data={favoriteData}
               renderItem={renderItem}
               keyExtractor={item => item.id}
             />
           )}
         </>
       )}
-      {/* <OptionsModal
-        modal={state.modalOpen}
-        data={state.optionData}
-        modalCase={state.modalCase}
-      /> */}
     </View>
   );
 };
 
-export default UserPlaylist;
+export default FavoritePlaylist;
 
 const styles = StyleSheet.create({
   innerContainer: {
