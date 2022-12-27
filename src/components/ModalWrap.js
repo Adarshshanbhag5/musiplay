@@ -1,7 +1,8 @@
-import {Pressable, StyleSheet, View} from 'react-native';
+import {Pressable, StyleSheet, useWindowDimensions, View} from 'react-native';
 import React from 'react';
 
 const ModalWrap = ({children, navigation}) => {
+  const {height} = useWindowDimensions();
   return (
     <View style={styles.modal__container}>
       <Pressable
@@ -9,7 +10,7 @@ const ModalWrap = ({children, navigation}) => {
           navigation.popToTop();
         }}
         style={styles.backDrop}></Pressable>
-      <View style={styles.modal}>{children}</View>
+      <View style={{...styles.modal, maxHeight: height - 100}}>{children}</View>
     </View>
   );
 };

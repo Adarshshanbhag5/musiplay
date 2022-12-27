@@ -21,8 +21,10 @@ const UserPlaylist = ({route, navigation}) => {
       setLoading(true);
       const jsonValue = await AsyncStorage.getItem(route.params.data.key);
       const playlist = JSON.parse(jsonValue);
-      const songs = data.filter(val => playlist.includes(val.id));
-      setPlaylistData(songs);
+      if (playlist) {
+        const songs = data.filter(val => playlist.includes(val.id));
+        setPlaylistData(songs);
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -75,17 +77,24 @@ const UserPlaylist = ({route, navigation}) => {
                 styles.inner__container__text
               }>{`${playlistData.length} songs`}</Text>
             <Text style={styles.inner__container__text}>
-              {convertMsToTime(
-                playlistData.reduce((total, val) => val.duration + total, 0),
-              )}
+              {playlistData.length > 0
+                ? convertMsToTime(
+                    playlistData.reduce(
+                      (total, val) => val.duration + total,
+                      0,
+                    ),
+                  )
+                : '00:00:00'}
             </Text>
           </View>
-          {playlistData && (
+          {playlistData.length > 0 ? (
             <FlatList
               data={playlistData}
               renderItem={renderItem}
               keyExtractor={item => item.id}
             />
+          ) : (
+            <Text style={styles.empty__text}> Oops! playlist is empty</Text>
           )}
         </>
       )}
@@ -117,5 +126,10 @@ const styles = StyleSheet.create({
   inner__container__text: {
     marginRight: 10,
     fontSize: 16,
+  },
+  empty__text: {
+    fontSize: 22,
+    textAlign: 'center',
+    color: '#fff',
   },
 });

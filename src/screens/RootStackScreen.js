@@ -10,6 +10,7 @@ import OptionModal from './modalScreen/OptionModal';
 import AddPlaylistModal from './modalScreen/AddPlaylistModal';
 import ColorPalletModal from './modalScreen/ColorPalletModal';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import SongInfoModal from './modalScreen/SongInfoModal';
 
 const RootStack = createNativeStackNavigator();
 const RootStackScreen = () => {
@@ -42,6 +43,10 @@ const RootStackScreen = () => {
                 <RootStack.Screen
                   name="colorpalletmodal"
                   component={ColorPalletModal}
+                />
+                <RootStack.Screen
+                  name="songInfo-modal"
+                  component={SongInfoModal}
                 />
               </RootStack.Group>
             </RootStack.Navigator>

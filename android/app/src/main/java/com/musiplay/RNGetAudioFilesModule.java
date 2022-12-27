@@ -157,10 +157,10 @@ public class RNGetAudioFilesModule extends ReactContextBaseJavaModule {
         WritableArray jsonArray = new WritableNativeArray();
         String[] projection = new String[]{
                 MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DISPLAY_NAME
+                MediaStore.Audio.Media.DATA,MediaStore.Audio.Media.MIME_TYPE
         };
         Uri songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0 AND " + MediaStore.Audio.Media.DURATION + " >= 10000 AND " + MediaStore.Audio.Media.ALBUM + " NOT LIKE 'WhatsApp Audio'";
         Cursor cursor = getCurrentActivity().getContentResolver().query(songUri, projection, selection, null, null);
         try {
             if (cursor != null && cursor.getCount() > 0) {
@@ -176,7 +176,7 @@ public class RNGetAudioFilesModule extends ReactContextBaseJavaModule {
                     item.putString("id", String.valueOf(cursor.getString(3)));
                     item.putInt("duration", duration);
                     item.putString("url", url);
-                    item.putString("display_name", String.valueOf(cursor.getString(6)));
+                    item.putString("contentType",String.valueOf(cursor.getString(6)));
 
                     long id = cursor.getLong(idColumn);
                     String songPath = cursor.getString(5);

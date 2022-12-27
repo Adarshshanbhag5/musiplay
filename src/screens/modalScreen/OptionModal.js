@@ -1,10 +1,11 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, ToastAndroid, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import ModalWrap from '../../components/ModalWrap';
 import OptionsView from '../../components/OptionsView';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import globalStyle from '../../utils/GlobalStyle';
 import {usePlaylistContext} from '../../hooks/usePlaylistContext';
+import TrackPlayer from 'react-native-track-player';
 
 const OptionModal = ({route, navigation}) => {
   const [heart, setHeart] = useState(false);
@@ -16,6 +17,25 @@ const OptionModal = ({route, navigation}) => {
         : setHeart(false);
     }
   }, [favoriteList]);
+  const removeFromCurrentQueue = async () => {
+    const currQueue = await TrackPlayer.getQueue();
+    let index = currQueue.findIndex(item => item.id === route.params.data.id);
+    if (index > -1) {
+      await TrackPlayer.remove(index);
+      ToastAndroid.showWithGravity(
+        'Done!',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM,
+      );
+    } else {
+      ToastAndroid.showWithGravity(
+        'Oops! this song is not in current queue',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM,
+      );
+    }
+    navigation.popToTop();
+  };
   return (
     <ModalWrap navigation={navigation}>
       <View style={[globalStyle.flex__row__space, styles.header__container]}>
@@ -40,10 +60,17 @@ const OptionModal = ({route, navigation}) => {
           borderBottomWidth: 1,
           borderColor: '#555',
         }}>
-        <OptionsView text="Song info" icon="info-outline" />
+        <OptionsView
+          text="Song info"
+          icon="info-outline"
+          onPress={() => {
+            navigation.replace('songInfo-modal', {data: route.params.data});
+          }}
+        />
         <OptionsView
           text="Remove from this queue"
           icon="remove-circle-outline"
+          onPress={removeFromCurrentQueue}
         />
       </View>
       <View style={styles.modal__inner__container}>

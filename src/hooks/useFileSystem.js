@@ -31,6 +31,7 @@ export function FileSystemProvider({children}) {
 
   async function getAllSongs() {
     try {
+      setDataLoading(true);
       const res = await getSongs();
       setFs(res);
       setData(res);

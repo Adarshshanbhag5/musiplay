@@ -20,6 +20,11 @@ const PlayerControlUp = ({track}) => {
       navigation.navigate('option-modal', {data: track});
     }
   };
+  const infoPress = () => {
+    if (track) {
+      navigation.navigate('songInfo-modal', {data: track});
+    }
+  };
   useEffect(() => {
     if (favoriteList && track) {
       favoriteList.includes(track.id) ? setHeart(true) : setHeart(false);
@@ -31,7 +36,7 @@ const PlayerControlUp = ({track}) => {
         <MaterialIcons
           name={heart ? 'favorite' : 'favorite-border'}
           color={'#fff'}
-          size={26}
+          size={24}
           onPress={() => {
             if (track) {
               setFavoriteSong(track.id);
@@ -39,21 +44,27 @@ const PlayerControlUp = ({track}) => {
           }}
         />
         <MaterialIcons
+          name="info-outline"
+          color={'#fff'}
+          size={24}
+          onPress={infoPress}
+        />
+        <MaterialIcons
           name="playlist-add"
           color={'#fff'}
-          size={26}
+          size={24}
           onPress={addPlaylist}
         />
         <MaterialIcons
           name="more-horiz"
           color={'#000'}
-          size={24}
+          size={22}
           style={{backgroundColor: '#fff', borderRadius: 8}}
           onPress={optionPress}
         />
       </View>
       <View style={globalStyle.flex__row__space}>
-        <MaterialCommunityIcons name="shuffle" color={'#fff'} size={26} />
+        <MaterialCommunityIcons name="shuffle" color={'#fff'} size={24} />
       </View>
     </View>
   );
@@ -66,6 +77,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   left__container: {
-    width: '40%',
+    width: '50%',
   },
 });

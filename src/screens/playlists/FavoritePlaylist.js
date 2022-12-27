@@ -64,17 +64,24 @@ const FavoritePlaylist = ({navigation}) => {
                 styles.inner__container__text
               }>{`${favoriteData.length} songs`}</Text>
             <Text style={styles.inner__container__text}>
-              {convertMsToTime(
-                favoriteData.reduce((total, val) => val.duration + total, 0),
-              )}
+              {favoriteData.length > 0
+                ? convertMsToTime(
+                    favoriteData.reduce(
+                      (total, val) => val.duration + total,
+                      0,
+                    ),
+                  )
+                : '00:00:00'}
             </Text>
           </View>
-          {favoriteData && (
+          {favoriteData.length > 0 ? (
             <FlatList
               data={favoriteData}
               renderItem={renderItem}
               keyExtractor={item => item.id}
             />
+          ) : (
+            <Text style={styles.empty__text}>Oops! favorite list is empty</Text>
           )}
         </>
       )}
@@ -101,5 +108,10 @@ const styles = StyleSheet.create({
   inner__container__text: {
     marginRight: 10,
     fontSize: 16,
+  },
+  empty__text: {
+    fontSize: 22,
+    textAlign: 'center',
+    color: '#fff',
   },
 });
